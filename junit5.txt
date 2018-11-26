@@ -1,0 +1,150 @@
+Dependencies
+Artifacts deployed on Maven Central 
+JUnit Platform
+	Group ID: org.junit.platform
+	Version : VERSION (1.3.1)
+	Artifact ID:
+		junit-platform-commons
+		junit-platform-console
+		junit-platform-console-standalone
+		junit-platform-engine
+		junit-platform-launcher
+		junit-platform-runner
+		junit-platform-suite-api
+		junit-platform-surefire-provider
+		
+JUnit Jupiter
+	Group ID: org.junit.jupiter
+	Version : VERSION (5.3.1)
+	Artifact ID:
+		junit-jupiter-api		(*)
+		junit-jupiter-engine	(*)
+		junit-jupiter-params	(*)
+		junit-jupiter-migrationsupport
+	
+JUnit Vintage
+	Group ID: org.junit.vintage
+	Version : VERSION (5.3.1)
+	Artifact ID:
+		junit-vintage-engine
+
+=================================================================================
+Annotations
+@Test					Denotes that a method is a test method
+@ParameterizedTest		Denotes that a method is a parameterized test. (***Experimental)
+@RepeatedTest			Denotes that a method is a test template for a repeated test.
+@TestFactory			Denotes that a method is a test factory for dynamic tests.
+@TestInstance			Used to configure the test instance lifecycle for the annotated test class.
+@TestTemplate			Denotes that a method is a template for test cases designed to be invoked multiple times depending on the number of invocation contexts returned by the registered providers.
+@DisplayName			Declares a custom display name for the test class or test method.
+@BeforeEach				Denotes that the annotated method should be executed before each @Test, @RepeatedTest, @ParameterizedTest, or @TestFactory method in the current class; analogous to JUnit 4’s @Before.
+@AfterEach				Denotes that the annotated method should be executed after each @Test, @RepeatedTest, @ParameterizedTest, or @TestFactory method in the current class; analogous to JUnit 4’s @After.
+@BeforeAll				Denotes that the annotated method should be executed before all @Test, @RepeatedTest, @ParameterizedTest, and @TestFactory methods in the current class; analogous to JUnit 4’s @BeforeClass.
+@AfterAll				Denotes that the annotated method should be executed after all @Test, @RepeatedTest, @ParameterizedTest, and @TestFactory methods in the current class; analogous to JUnit 4’s @AfterClass.
+@Nested					Denotes that the annotated class is a nested, non-static test class. @BeforeAll and @AfterAll methods cannot be used directly in a @Nested test class unless the "per-class" test instance lifecycle is used.
+@Tag					Used to declare tags for filtering tests, either at the class or method level; analogous to test groups in TestNG or Categories in JUnit 4.
+@Disabled				Used to disable a test class or test method; analogous to JUnit 4’s @Ignore.
+@ExtendWith				Used to register custom extensions.
+
+
+
+Methods annotated with @Test, @TestTemplate, @RepeatedTest, @BeforeAll, @AfterAll, @BeforeEach, or @AfterEach annotations must not return a value.
+
+====================================================================================
+
+Test Class & Methods
+
+A test method is any instance method that is directly or meta-annotated with @Test, @RepeatedTest, @ParameterizedTest, @TestFactory, or @TestTemplate. 
+A test class is any top level or static member class that contains at least one test method.
+
+NOTE : Neither test class nor test methods need to be public.
+
+=====================================================================================
+Display Names
+@DisplayName
+
+======================================================================================
+Assertions
+All JUnit Jupiter assertions are static methods in the org.junit.jupiter.api.Assertions class.
+
+
+JUnit Jupiter are sufficient for many testing scenarios, there are times when more power and additional functionality such as matchers are desired or required. In such cases, the JUnit team recommends the use of third-party assertion libraries such as AssertJ, Hamcrest, Truth, etc.
+======================================================================================
+Assumptions
+All JUnit Jupiter assumptions are static methods in the org.junit.jupiter.api.Assumptions class.
+
+======================================================================================
+Disabling Tests
+
+=======================================================================================
+Conditional Test Execution
+The ExecutionCondition extension API in JUnit Jupiter allows developers to either enable or disable a container or test based on certain conditions programmatically. 
+JUnit Jupiter also supports several other annotation-based conditions in the org.junit.jupiter.api.condition package that allow developers to enable or disable containers and tests declaratively.
+
+Operating System Conditions
+@EnabledOnOs
+@DisabledOnOs
+
+Java Runtime Environment Conditions
+@EnabledOnJre
+@DisabledOnJre
+
+System Property Conditions
+@EnabledIfSystemProperty
+@DisabledIfSystemProperty
+
+Environment Variable Conditions
+@EnabledIfEnvironmentVariable
+@DisabledIfEnvironmentVariable
+
+Script-based Conditions
+JUnit Jupiter provides the ability to either enable or disable a container or test depending on the evaluation of a script configured via the @EnabledIf or @DisabledIf annotation. Scripts can be written in JavaScript, Groovy, or any other scripting language for which there is support for the Java Scripting API, defined by JSR 223.
+=======================================================================================
+Tagging and Filtering
+Test classes and methods can be tagged via the @Tag annotation. Those tags can later be used to filter test discovery and execution.
+
+=======================================================================================
+Test Instance Lifecycle
+JUnit creates a new instance of each test class before executing each test method (see Test Classes and Methods). This "per-method" test instance lifecycle is the default behavior.
+
+JUnit Jupiter execute all test methods on the same test instance, simply annotate your test class with @TestInstance(Lifecycle.PER_CLASS).
+
+When using this mode, a new test instance will be created once per test class. Thus, if your test methods rely on state stored in instance variables, you may need to reset that state in @BeforeEach or @AfterEach methods.
+The "per-class" mode has some additional benefits over the default "per-method" mode. Specifically, with the "per-class" mode it becomes possible to declare @BeforeAll and @AfterAll on non-static methods as well as on interface default methods. The "per-class" mode therefore also makes it possible to use @BeforeAll and @AfterAll methods in @Nested test classes.
+
+JUnit Jupiter will use a default lifecycle mode. The standard default mode is PER_METHOD;
+JVM System property
+-Djunit.jupiter.testinstance.lifecycle.default=per_class
+
+junit-platform.properties (src/test/resources)
+junit.jupiter.testinstance.lifecycle.default = per_class
+
+=======================================================================================
+Nested Tests
+Nested tests give the test writer more capabilities to express the relationship among several group of tests.
+
+JUnit Jupiter @Nested annotation can be used to mark a nested class to be included in the test cases. When JUnit tests are executed, Nested classes are not scanned for test methods. We can explicitly mark them to be scanned for test cases using @Nested annotation.
+=======================================================================================
+Dependency Injection for Constructors and Methods
+
+As one of the major changes in JUnit Jupiter, both test constructors and methods are now permitted to have parameters.
+ParameterResolver defines the API for test extensions that wish to dynamically resolve parameters at runtime. If a test constructor or a @Test, @TestFactory, @BeforeEach, @AfterEach, @BeforeAll, or @AfterAll method accepts a parameter, the parameter must be resolved at runtime by a registered ParameterResolver.
+
+three built-in resolvers that are registered automatically
+TestInfoParameterResolver : TestInfo
+RepetitionInfoParameterResolver : RepetitionInfo
+	if a method parameter in a @RepeatedTest, @BeforeEach, or @AfterEach method is of type RepetitionInfo, the RepetitionInfoParameterResolver will supply an instance of RepetitionInfo. RepetitionInfo can then be used to retrieve information about the current repetition and the total number of repetitions for the corresponding @RepeatedTest. Note, however, that RepetitionInfoParameterResolver is not registered outside the context of a @RepeatedTest.
+TestReporterParameterResolver : TestReporter
+	if a method parameter is of type TestReporter, the TestReporterParameterResolver will supply an instance of TestReporter.
+	
+Other parameter resolvers must be explicitly enabled by registering appropriate extensions via @ExtendWith.
+RandomParametersExtension
+=======================================================================================
+Test Interfaces and Default Methods
+
+
+=======================================================================================
+Repeated Tests
+
+=======================================================================================
+=======================================================================================
